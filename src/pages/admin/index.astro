@@ -1,0 +1,59 @@
+---
+// Secure Edge API query fetching active bespoke orders
+const db = Astro.locals.runtime.env.DB;
+const { results: orders } = await db.prepare(
+  "SELECT * FROM bespoke_orders ORDER BY created_at DESC"
+).all();
+---
+
+<html lang="en" class="bg-black text-gray-100 font-sans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CMYK | Lab Floor</title>
+  </head>
+  <body class="min-h-screen p-4 pb-20">
+    <header class="border-b border-gray-800 pb-4 mb-6 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-md z-50">
+      <h1 class="text-xl font-black tracking-widest uppercase">The Lab <span class="text-magenta-500">Floor</span></h1>
+      <span class="bg-cyan-500/20 text-cyan-400 text-xs px-3 py-1 rounded-sm border border-cyan-500/30 uppercase tracking-wider">
+        {orders.length} Active
+      </span>
+    </header>
+
+    <main class="space-y-4">
+      {orders.map((order: any) => {
+        const specs = JSON.parse(order.measurements || '{}');
+        return (
+          <article class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-xl">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h3 class="font-bold text-white uppercase tracking-wide">{order.customer_name}</h3>
+                <p class="text-xs text-gray-400 mt-1">📞 {order.phone} | 📍 {order.delivery_location}</p>
+              </div>
+              <span class="text-[10px] font-black uppercase bg-yellow-400 text-black px-2 py-1 rounded-sm">
+                {order.status}
+              </span>
+            </div>
+
+            <div class="bg-black p-3 rounded-lg text-xs grid grid-cols-3 gap-2 font-mono text-gray-300 border border-white/5 mb-3">
+              <div class="flex flex-col"><span class="text-gray-500 mb-1">CHEST</span>{specs.chest || '--'}"</div>
+              <div class="flex flex-col"><span class="text-gray-500 mb-1">WAIST</span>{specs.waist || '--'}"</div>
+              <div class="flex flex-col"><span class="text-gray-500 mb-1">INSEAM</span>{specs.inseam || '--'}"</div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+              <p class="text-gray-400">Fabric: <span class="text-white font-semibold">{order.fabric_choice}</span></p>
+              <p class="text-gray-500 font-mono truncate w-24">Ref: {order.payment_reference}</p>
+            </div>
+          </article>
+        );
+      })}
+      
+      {orders.length === 0 && (
+        <div class="text-center py-10 text-gray-500 text-sm uppercase tracking-widest">
+          No active builds in the lab.
+        </div>
+      )}
+    </main>
+  </body>
+</html>
