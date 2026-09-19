@@ -1,59 +1,185 @@
 ---
-// Query D1 database at the Edge
-const db = Astro.locals.runtime.env.DB;
-const { results: products } = await db.prepare(
-  "SELECT * FROM products"
-).all();
+// src/pages/index.astro
 ---
 
-<html lang="en" class="bg-gray-950 text-gray-100 font-sans">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CMYK | The Lab</title>
-  </head>
-  <body class="min-h-screen">
-    <header class="p-4 border-b border-white/10 backdrop-blur-md bg-black/50 sticky top-0 z-50 flex justify-between items-center">
-      <h1 class="text-xl font-black tracking-widest uppercase">CMYK <span class="text-cyan-400">LAB</span></h1>
-      <div class="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-black text-xs font-bold">0</div>
-    </header>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CMYK Brand Media Ltd - Streetwear Laboratory</title>
+	</head>
+	<body class="bg-[#0b0b0c] text-white font-sans antialiased pb-24 selection:bg-neutral-800">
 
-    <main class="p-4 pb-20">
-      <h2 class="text-lg font-bold tracking-widest uppercase mb-6 mt-4">The Drops</h2>
+		<!-- Top Header -->
+		<header class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0b0b0c]/80 backdrop-blur-md sticky top-0 z-50">
+			<!-- Hamburger Menu -->
+			<button aria-label="Menu" class="text-white focus:outline-none">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+				</svg>
+			</button>
 
-      <div class="grid grid-cols-2 gap-4">
-        {products.map((item: any) => (
-          <article class="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden shadow-2xl flex flex-col">
-            <div class="aspect-square bg-gray-900 relative">
-              <!-- CMYK overlay blend for unoptimized images -->
-              <div class="absolute inset-0 bg-gradient-to-tr from-cyan-900/60 via-magenta-900/30 to-yellow-900/20 mix-blend-overlay"></div>
-              
-              <img 
-                src={`/images/${item.r2_image_key}`} 
-                alt={item.name} 
-                loading="lazy" 
-                class="object-cover h-full w-full mix-blend-luminosity hover:mix-blend-normal transition-all" 
-              />
-              
-              {item.is_bespoke === 1 && (
-                <span class="absolute top-2 left-2 bg-cyan-500 text-black text-[10px] font-black px-2 py-1 rounded-sm uppercase tracking-wider">
-                  Custom Fit
-                </span>
-              )}
-            </div>
-            
-            <div class="p-3 flex flex-col flex-grow justify-between border-t border-white/10">
-              <h3 class="font-semibold text-gray-200 text-sm truncate">{item.name}</h3>
-              <div class="mt-2 flex items-center justify-between">
-                <span class="font-mono text-cyan-400 text-sm">₦{item.base_price.toLocaleString()}</span>
-              </div>
-              <a href={`/product/${item.id}`} class="mt-3 block text-center w-full bg-white/10 hover:bg-cyan-500 hover:text-black text-white text-xs font-bold py-2 rounded-lg transition-colors">
-                Configure Fit
-              </a>
-            </div>
-          </article>
-        ))}
-      </div>
-    </main>
-  </body>
+			<!-- Logo -->
+			<div class="flex flex-col items-center">
+				<div class="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 p-[2px] rounded-lg">
+					<div class="bg-black px-3 py-1 rounded-[6px]">
+						<span class="text-xs font-bold tracking-widest text-cyan-400">CMYK</span>
+					</div>
+				</div>
+				<span class="text-[10px] tracking-widest text-neutral-400 mt-1 uppercase font-medium">Brand Media Ltd</span>
+			</div>
+
+			<!-- Cart Icon with Badge -->
+			<div class="relative">
+				<button aria-label="Shopping Cart" class="p-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+					</svg>
+				</button>
+				<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-lg">1</span>
+			</div>
+		</header>
+
+		<!-- Main Content Wrapper -->
+		<main class="max-w-md mx-auto px-4 pt-4 space-y-8">
+
+			<!-- Hero Section -->
+			<section class="relative rounded-2xl overflow-hidden border border-white/10 bg-neutral-900 shadow-2xl h-80 flex flex-col justify-end p-6">
+				<!-- Background Image / Team Overlay -->
+				<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800');"></div>
+				<div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-[#0b0b0c]/40 to-transparent"></div>
+
+				<!-- Hero Content -->
+				<div class="relative z-10 space-y-3">
+					<h1 class="text-3xl font-black tracking-tight text-white drop-shadow-md">THE LAB IS OPEN.</h1>
+					<a href="/custom-lab" class="inline-block w-full py-3 px-4 text-center text-sm font-semibold text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-xl hover:bg-white/20 transition shadow-lg">
+						Start Your Custom Build
+					</a>
+				</div>
+			</section>
+
+			<!-- The Factory Floor Section -->
+			<section class="space-y-3">
+				<div class="flex items-center space-x-2">
+					<h2 class="text-sm font-bold tracking-wider text-neutral-300 uppercase">THE FACTORY FLOOR</h2>
+					<span class="text-base">⚙️</span>
+				</div>
+
+				<!-- Horizontal Scroll Cards -->
+				<div class="flex space-x-4 overflow-x-auto pb-2 scrollbar-none">
+					<!-- Card 1 -->
+					<div class="min-w-[220px] bg-neutral-900/80 backdrop-blur-md border border-white/10 p-4 rounded-2xl space-y-3">
+						<div class="h-20 bg-neutral-800 rounded-lg flex items-center justify-center border border-white/5">
+							<span class="text-xs text-neutral-400 font-mono">[DTF Machine Preview]</span>
+						</div>
+						<div>
+							<h3 class="text-sm font-semibold text-white">DTF Print (Machinery)</h3>
+							<p class="text-xs text-neutral-400 mt-1">Technical specs</p>
+							<p class="text-xs text-neutral-500">Technical specs</p>
+						</div>
+					</div>
+
+					<!-- Card 2 -->
+					<div class="min-w-[220px] bg-neutral-900/80 backdrop-blur-md border border-white/10 p-4 rounded-2xl space-y-3">
+						<div class="h-20 bg-neutral-800 rounded-lg flex items-center justify-center border border-white/5">
+							<span class="text-xs text-neutral-400 font-mono">[UV Printer Preview]</span>
+						</div>
+						<div>
+							<h3 class="text-sm font-semibold text-white">UV Print (Item)</h3>
+							<p class="text-xs text-neutral-400 mt-1">Technical specs</p>
+							<p class="text-xs text-neutral-500">Technical specs</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- The Drops Section -->
+			<section class="space-y-3">
+				<div class="flex items-center justify-between">
+					<div class="flex items-center space-x-2">
+						<h2 class="text-sm font-bold tracking-wider text-neutral-300 uppercase">THE DROPS</h2>
+						<span class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-semibold">🌟 NEW</span>
+					</div>
+				</div>
+
+				<!-- Product Grid -->
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<!-- Product 1 -->
+					<div class="bg-neutral-900/80 border border-white/10 rounded-2xl overflow-hidden group">
+						<div class="h-48 bg-neutral-800 relative flex items-center justify-center">
+							<span class="text-xs text-neutral-500">[Varsity Jacket Image]</span>
+							<span class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold text-white border border-white/10">$35.00</span>
+						</div>
+						<div class="p-3">
+							<h3 class="text-sm font-medium text-white">Varsity Jacket - B/W</h3>
+						</div>
+					</div>
+
+					<!-- Product 2 -->
+					<div class="bg-neutral-900/80 border border-white/10 rounded-2xl overflow-hidden group">
+						<div class="h-48 bg-neutral-800 relative flex items-center justify-center">
+							<span class="text-xs text-neutral-500">[Cargo Shorts Image]</span>
+							<span class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold text-white border border-white/10">$30.00</span>
+						</div>
+						<div class="p-3">
+							<h3 class="text-sm font-medium text-white">Cargo Shorts - Blk</h3>
+						</div>
+					</div>
+
+					<!-- Product 3 -->
+					<div class="bg-neutral-900/80 border border-white/10 rounded-2xl overflow-hidden group sm:col-span-2">
+						<div class="h-48 bg-neutral-800 relative flex items-center justify-center">
+							<span class="text-xs text-neutral-500">[Tracksuit Image]</span>
+							<span class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold text-white border border-white/10">$25.00</span>
+						</div>
+						<div class="p-3">
+							<h3 class="text-sm font-medium text-white">Tracksuit - Grey</h3>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Footer Note -->
+			<footer class="text-center py-6 text-neutral-500 text-xs tracking-wide">
+				Abuja Streetwear Laboratory | (c) 2026
+			</footer>
+
+		</main>
+
+		<!-- Bottom Navigation Bar -->
+		<nav class="fixed bottom-0 left-0 right-0 bg-[#0b0b0c]/90 backdrop-blur-lg border-t border-white/10 py-3 px-6 z-50">
+			<div class="max-w-md mx-auto flex justify-around items-center">
+				<!-- Home -->
+				<a href="/" class="flex flex-col items-center text-cyan-400 space-y-1">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+					</svg>
+					<span class="text-[10px] font-medium">Home</span>
+				</a>
+				<!-- Store -->
+				<a href="/store" class="flex flex-col items-center text-neutral-400 hover:text-white transition space-y-1">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+					</svg>
+					<span class="text-[10px] font-medium">Store</span>
+				</a>
+				<!-- Custom Lab -->
+				<a href="/custom-lab" class="flex flex-col items-center text-neutral-400 hover:text-white transition space-y-1">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+					</svg>
+					<span class="text-[10px] font-medium">Custom Lab</span>
+				</a>
+				<!-- Profile -->
+				<a href="/profile" class="flex flex-col items-center text-neutral-400 hover:text-white transition space-y-1">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+					</svg>
+					<span class="text-[10px] font-medium">Profile</span>
+				</a>
+			</div>
+		</nav>
+
+	</body>
 </html>
